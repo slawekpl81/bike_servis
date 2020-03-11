@@ -14,6 +14,7 @@ class ServisClient(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.phone}'
+
     def post_name(self):
         return f'{self.name}'
 
@@ -26,9 +27,10 @@ class Bike(models.Model):
 
     def __str__(self):
         return f'{self.owner.post_name()} - {self.name}'
+
 class Servis(models.Model):
     date = models.DateField(default=datetime.date.today)
-    end_date = models.DateField(default=datetime.date.today)
+    end_date = models.DateField(default=datetime.date.today() + datetime.timedelta(days=5))
     status = models.BooleanField(default=False)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     servis_range = models.TextField()
@@ -42,6 +44,11 @@ class Comments(models.Model):
     date = models.DateTimeField(default=datetime.datetime.now)
     author = models.CharField(max_length=50, blank=True)
     answer = models.TextField(blank=True)
+
+    def __repr__(self):
+        return f'Komentarz z dnia: {self.date}:\n {self.message}'
+    def __str__(self):
+        return f'Komentarz z dnia: {self.date}:\n {self.message}'
 
 
 

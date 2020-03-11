@@ -19,5 +19,7 @@ from clients_base import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home_view, name='home'),
+    path('', views.home),
+    path('clients/', views.clients),
+    path('comments/', views.comments),
 ]
