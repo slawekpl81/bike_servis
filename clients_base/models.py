@@ -36,6 +36,8 @@ class Servis(models.Model):
     servis_range = models.TextField()
     expense = models.DecimalField(max_digits=10, decimal_places=2, blank=True, default=0)
     other = models.TextField(blank=True)
+    def __str__(self):
+        return f'{self.bike.name} - {self.bike.owner}'
 
 
 

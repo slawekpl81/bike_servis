@@ -22,4 +22,6 @@ urlpatterns = [
     path('', views.home),
     path('clients/', views.clients),
     path('comments/', views.comments),
+    path('new_client/', views.new_client),
+    path('new_bike/', views.new_bike),
 ]

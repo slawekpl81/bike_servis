@@ -5,10 +5,15 @@
     {% if comments %}
         <ul>
             {% for comment in comments %}
-                <li>{{ comment }}</li>
+                <li>{{ comment }} -- {{ comment.answer }}</li>
             {% endfor %}
         </ul>
     {% else %}
         <p>brak komentarzy!</p>
     {% endif %}
+    <p>Nowy komentarz:</p>
+    <form method="post"> {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="save">
+    </form>
 {% endblock content %}
