@@ -10,21 +10,30 @@
     {% block content %}
 
     {% endblock content%}
-        <p id="admin_link">
-        <a href="admin/">
-            <h3>Admin</h3>
+        <p id="start">
+        <a href={% url 'home' %}>
+            <h3>START</h3>
         </a>
     </p>
-
     <p id="clients_link">
-        <a href="clients/">
+        <a href={% url 'clients' %}>
             <h3>Klienci</h3>
         </a>
     </p>
 
         <p id="comments_link">
-        <a href="/comments/">
+        <a href={% url 'comments' %}>
             <h3>Komentarze</h3>
+        </a>
+    </p>
+        <p id="new_client">
+        <a href={% url 'new_client' %}>
+            <h3>Dodaj klienta</h3>
+        </a>
+    </p>
+        <p id="comments_link">
+        <a href={% url 'new_bike' %}>
+            <h3>Dodaj rower</h3>
         </a>
     </p>
 </body>
