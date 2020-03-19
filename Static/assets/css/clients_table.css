@@ -1,0 +1,22 @@
+    #clients {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #clients td, #clients th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #clients tr:nth-child(even){background-color: #f2f2f2;}
+
+    #clients tr:hover {background-color: #ddd;}
+
+    #clients th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #1681af;
+      color: white;
+    }

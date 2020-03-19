@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>wszystko oko !</h3>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/css/clients_table.css' %}">
+    <table id="clients">
+      <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>MIKESZ</th>
+          <th>Bike</th>
+          <th>Bike type</th>
+          <th>Servis date</th>
+          <th>Servis range</th>
+      </tr>
+            {{ text|safe }}
+    </table>
+
+
 {% endblock content%}
+

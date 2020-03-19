@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>Liczba aktywnych serwisów: {{ numbers_of }}</p>
+
+    <p>Nowy serwis:</p>
+    <form method="post"> {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="save">
+    </form>
+{% endblock content %}

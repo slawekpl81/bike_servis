@@ -23,21 +23,21 @@
             <div class="row justify-content-center features" style="padding-top:30px;padding-bottom:0px;">
                 <div class="col-sm-6 col-md-5 col-lg-4 item">
                     <div class="box">
-                        <a href="admin/">
+                        <a href={% url 'home' %}>
                             <i class="fa fa-sign-in icon"></i></a>
                         <h3 class="name">Logowanie</h3>
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-5 col-lg-4 item">
                     <div class="box">
-                        <a href="clients/">
+                        <a href={% url 'clients' %}>
                             <i class="fa fa-bicycle icon"></i></a>
                         <h3 class="name">Klienci</h3>
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-5 col-lg-4 item">
                     <div class="box">
-                        <a href="comments/">
+                        <a href={% url 'comments' %}>
                             <i class="fa fa-comment-o icon"></i></a>
                         <h3 class="name">Komentarze</h3>
                     </div>
@@ -51,9 +51,9 @@
 
     {% endblock content%}
 
-    <script src="../Static/assets/js/jquery.min.js"></script>
-    <script src="../Static/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../Static/assets/js/bs-animation.js"></script>
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/bs-animation.js' %}"></script>
 </body>
 
 </html>

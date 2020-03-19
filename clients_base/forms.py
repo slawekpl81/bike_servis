@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Comments, ServisClient, Bike
+from .models import Comments, ServisClient, Bike, Servis
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -25,3 +25,10 @@ class NewBike(forms.ModelForm):
         model = Bike
         #fields = '__all__'
         fields = ['name', 'owner', 'type', 'date_made', 'other']
+
+class NewServis(forms.ModelForm):
+    class Meta:
+        model = Servis
+        #fields = '__all__'
+        fields = ['date', 'status', 'bike', 'servis_range', 'other']
+        labels = {'status' : 'serwis zakończony'}
