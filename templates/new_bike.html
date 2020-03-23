@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div style="background-color: #007bff">
     <p>Liczba rowerów: {{ numbers_of }}</p>
-
-    <p>Nowy rower:</p>
+    <h3>Nowy rower:</h3>
     <form method="post"> {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="save">
     </form>
+    </div>
 {% endblock content %}

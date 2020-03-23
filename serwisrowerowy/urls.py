@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from clients_base import views
 from django.contrib.auth import views as auth_views
+from accounts.views import login_view
 
 urlpatterns = [
     path('login/', auth_views.auth_login, name='login'),
@@ -31,4 +32,7 @@ urlpatterns = [
     path('clients/<int:client_id>', views.client, name='client'),
     path('clients/bike/<int:bike_id>', views.bike, name='bike'),
     path('clients/servis/<int:servis_id>', views.servis, name='servis'),
+    path('accounts/login/', login_view, name='login'),
+    #path('accounts/register/', register_view),
+    path('accounts/logout/', logout_view),
 ]

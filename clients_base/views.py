@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .models import Bike, Comments, ServisClient, Servis
 from .forms import CommentForm, NewClientForm, NewBike, NewServis
 
@@ -10,7 +11,7 @@ from .forms import CommentForm, NewClientForm, NewBike, NewServis
 def home(request, *args, **kwargs):
     return render(request, 'index.html', {})
 
-
+@login_required()
 def clients(request):
     all_clients = ServisClient.objects.all()
     all_bikes = Bike.objects.all()
