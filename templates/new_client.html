@@ -1,11 +1,83 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Liczba klientów: {{ numbers_of }}</p>
-
-    <p>Nowy klient:</p>
-    <form method="post"> {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="save">
-    </form>
+        <style >
+    .data{
+        color: #007bff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+        .data form li{
+            padding: 10px 10px;
+        }
+    </style>
+    <div class="data">
+            {% if new_client %}
+                <p>Nowy klient:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ new_client.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+            {% elif new_bike %}
+                <p>Nowy rower:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ new_bike.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+            {% elif new_servis %}
+                <p>Nowy serwis:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ new_servis.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+            {% elif new_group %}
+                <p>Nowa grupa:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ new_group.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+                            {% elif group %}
+                <p>Grupa:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ group.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+                            {% elif servis %}
+                <p>Servis:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ servis.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+                            {% elif bike %}
+                <p>Rower:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ bike.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+                            {% elif client %}
+                <p>Klient:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ client.as_ul }}
+                </p>
+                <input type="submit" value="save">
+            </form>
+            {% endif %}
+    </div>
 {% endblock content %}

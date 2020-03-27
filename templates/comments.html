@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
+            <style >
+    .data{
+        color: #007bff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+        .data form li{
+            padding: 10px 10px;
+        }
+    </style>
+
+
+    <div class="data">
     <p>KOMENTARZE:</p>
     {% if comments %}
+
         <ul>
             {% for comment in comments %}
                 <li>{{ comment }} -- {{ comment.answer }}</li>
@@ -10,10 +26,12 @@
         </ul>
     {% else %}
         <p>brak komentarzy!</p>
+        <p id="data_forms">
     {% endif %}
     <p>Nowy komentarz:</p>
     <form method="post"> {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="save">
     </form>
+    </div>
 {% endblock content %}

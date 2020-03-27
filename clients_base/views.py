@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Bike, Comments, ServisClient, Servis
-from .forms import CommentForm, NewClientForm, NewBike, NewServis
+from .models import Bike, Comments, ServisClient, Servis, Group
+from .forms import CommentForm, NewClientForm, NewBike, NewServis, NewGroup
 
 
 
@@ -16,6 +16,7 @@ def clients(request):
     all_clients = ServisClient.objects.all()
     all_bikes = Bike.objects.all()
     all_servises = Servis.objects.all()
+    all_groups = Group.objects.all()
     context = ''
     for client in all_clients:
         context += '<tr>'
@@ -23,7 +24,7 @@ def clients(request):
         context += f'<td> <a href="{client.id}"> {client.name}</a></td>'
         context += f'<td>{client.phone}</td>'
         context += f'<td>{client.email}</td>'
-        context += f'<td>{"TAK" if client.mikesz else " "}</td>'
+        context += f'<td><a href="group/{client.group.id}">{client.group}</td>'
         context += '</tr>'
         for count, bike in enumerate(all_bikes):
             if bike.owner == client:
@@ -32,8 +33,8 @@ def clients(request):
                 context += f'<td> </td>'
                 context += f'<td> </td>'
                 context += f'<td> </td>'
-                context += f'<td><a href="bike/{bike.id}">{bike.name}</a></td>'
-                context += f'<td>{bike.type}</td>'
+                context += f'<td><a href="bike/{bike.id}">{bike.mark}</a></td>'
+                context += f'<td>{bike.model}</td>'
                 context += '</tr>'
                 for servis in all_servises:
                     if servis.bike == bike:
@@ -68,8 +69,7 @@ def new_client(request):
     if form.is_valid():
         form.save()
         form = NewClientForm()
-    context= {'numbers_of' : clients_number,
-              'form' : form}
+    context= {'new_client' : form}
     return render(request, 'new_client.html', context)
 
 @login_required()
@@ -79,9 +79,8 @@ def new_bike(request):
     if form.is_valid():
         form.save()
         form = NewBike()
-    context= {'numbers_of' : bikes_number,
-              'form' : form}
-    return render(request, 'new_bike.html', context)
+    context= {'new_bike' : form}
+    return render(request, 'new_client.html', context)
 
 @login_required()
 def new_servis(request):
@@ -90,9 +89,18 @@ def new_servis(request):
     if form.is_valid():
         form.save()
         form = NewServis()
-    context= {'numbers_of' : servises_number,
-              'form' : form}
-    return render(request, 'new_servis.html', context)
+    context= {'new_servis' : form}
+    return render(request, 'new_client.html', context)
+
+@login_required()
+def new_group(request):
+    #servises_number = Servis.objects.all().__len__()
+    form = NewGroup(request.POST or None)
+    if form.is_valid():
+        form.save()
+        form = NewGroup()
+    context= {'new_group' : form}
+    return render(request, 'new_client.html', context)
 
 @login_required()
 def client(request, client_id):
@@ -100,8 +108,7 @@ def client(request, client_id):
     form = NewClientForm(request.POST or None, instance=client_one)
     if form.is_valid():
         form.save()
-    context= {'numbers_of' : client_id,
-              'form' : form}
+    context= {'client' : form}
     return render(request, 'new_client.html', context)
 
 @login_required()
@@ -110,9 +117,8 @@ def bike(request, bike_id):
     form = NewBike(request.POST or None, instance=bike_one)
     if form.is_valid():
         form.save()
-    context= {'numbers_of' : bike_id,
-              'form' : form}
-    return render(request, 'new_bike.html', context)
+    context= {'bike' : form}
+    return render(request, 'new_client.html', context)
 
 @login_required()
 def servis(request, servis_id):
@@ -120,6 +126,14 @@ def servis(request, servis_id):
     form = NewServis(request.POST or None, instance=servis_one)
     if form.is_valid():
         form.save()
-    context= {'numbers_of' : servis_id,
-              'form' : form}
-    return render(request, 'new_servis.html', context)
+    context= {'servis' : form}
+    return render(request, 'new_client.html', context)
+
+@login_required()
+def group(request, group_id):
+    group_one = Group.objects.get(pk=group_id)
+    form = NewGroup(request.POST or None, instance=group_one)
+    if form.is_valid():
+        form.save()
+    context= {'group' : form}
+    return render(request, 'new_client.html', context)

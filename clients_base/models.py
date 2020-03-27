@@ -4,12 +4,18 @@ import datetime
 
 # Create your models here.
 
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+    other = models.TextField(blank=True)
+
+    def __str__(self):
+        return f'{self.name}'
+
 class ServisClient(models.Model):
     name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=12)
+    phone = models.CharField(max_length=12, blank=True, unique=True)
     email = models.EmailField(blank=True)
-    mikesz = models.BooleanField(default=False)
-    cash_reg = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     other = models.TextField(blank=True)
 
     def __str__(self):
@@ -19,25 +25,25 @@ class ServisClient(models.Model):
         return f'{self.name}'
 
 class Bike(models.Model):
-    name = models.CharField(max_length=100)
+    mark = models.CharField(max_length=100)
+    model = models.CharField(max_length=100, blank=True)
     owner = models.ForeignKey(ServisClient, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, blank=True)
-    date_made = models.DateField(blank=True)
+    year_made = models.CharField(max_length=20, blank=True)
     other = models.TextField(blank=True)
 
     def __str__(self):
-        return f'{self.owner.post_name()} - {self.name}'
+        return f'{self.owner.post_name()} - {self.mark} {self.model}'
 
 class Servis(models.Model):
     date = models.DateField(default=datetime.date.today)
     end_date = models.DateField(default=datetime.date.today() + datetime.timedelta(days=5))
     status = models.BooleanField(default=False)
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
-    servis_range = models.TextField()
-    expense = models.DecimalField(max_digits=10, decimal_places=2, blank=True, default=0)
+    servis_range = models.TextField(blank=True)
     other = models.TextField(blank=True)
     def __str__(self):
-        return f'{self.bike.name} - {self.bike.owner}'
+        return f'{self.bike.owner}-{self.bike.mark} {self.bike.model}'
 
 
 
