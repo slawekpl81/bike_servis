@@ -5,7 +5,7 @@ import datetime
 # Create your models here.
 
 class Group(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     other = models.TextField(blank=True)
 
     def __str__(self):

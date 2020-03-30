@@ -3,6 +3,17 @@
 {% block content %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'assets/css/clients_table.css' %}">
+    <div class="data_form">
+         {% if form %}
+                    <p>Wyszukaj:</p>
+                    <form method="post"> {% csrf_token %}
+                    <p id="data_forms">
+                    {{ form.as_p }}
+                    </p>
+                    <input type="submit" value="wyszukaj">
+                </form>
+        {% endif %}
+    </div>
     <table id="clients">
       <tr>
           <th>Nazwa</th>

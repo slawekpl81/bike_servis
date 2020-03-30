@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Bike, Comments, ServisClient, Servis, Group
-from .forms import CommentForm, NewClientForm, NewBike, NewServis, NewGroup
+from .forms import CommentForm, NewClientForm, NewBike, NewServis, NewGroup, SearchForm
 
 
 
@@ -13,43 +13,57 @@ def home(request, *args, **kwargs):
 
 @login_required()
 def clients(request):
-    all_clients = ServisClient.objects.all()
+
+    form = SearchForm(request.POST or None)
+    if form.is_valid():
+        form.wyszukaj()
+        #form = CommentForm()
+
+    if form.search_name == 'nie określono':
+        all_clients = ServisClient.objects.all()
+    else:
+        all_clients = ServisClient.objects.filter(name=form.search_name)
+    if form.search_group == 'nie określono':
+        all_groups = Group.objects.all()
+    else:
+        all_groups = Group.objects.filter(name=form.search_group)
     all_bikes = Bike.objects.all()
     all_servises = Servis.objects.all()
-    all_groups = Group.objects.all()
+
     context = ''
     for client in all_clients:
-        context += '<tr>'
+        if client.group in all_groups:
+            context += '<tr>'
+            context += f'<td> <a href="{client.id}"> {client.name}</a></td>'
+            context += f'<td>{client.phone}</td>'
+            context += f'<td>{client.email}</td>'
+            context += f'<td><a href="group/{client.group.id}">{client.group}</td>'
+            context += '</tr>'
+            for count, bike in enumerate(all_bikes):
+                if bike.owner == client:
+                    context += '<tr>'
+                    context += f'<td> </td>'
+                    context += f'<td> </td>'
+                    context += f'<td> </td>'
+                    context += f'<td> </td>'
+                    context += f'<td><a href="bike/{bike.id}">{bike.mark}</a></td>'
+                    context += f'<td>{bike.model}</td>'
+                    context += '</tr>'
+                    for servis in all_servises:
+                        if servis.bike == bike:
+                            context += '<tr>'
+                            context += f'<td> </td>'
+                            context += f'<td> </td>'
+                            context += f'<td> </td>'
+                            context += f'<td> </td>'
+                            context += f'<td> </td>'
+                            context += f'<td> </td>'
+                            context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
+                            context += f'<td>{servis.servis_range[:20]}...</td>'
+                            context += '</tr>'
 
-        context += f'<td> <a href="{client.id}"> {client.name}</a></td>'
-        context += f'<td>{client.phone}</td>'
-        context += f'<td>{client.email}</td>'
-        context += f'<td><a href="group/{client.group.id}">{client.group}</td>'
-        context += '</tr>'
-        for count, bike in enumerate(all_bikes):
-            if bike.owner == client:
-                context += '<tr>'
-                context += f'<td> </td>'
-                context += f'<td> </td>'
-                context += f'<td> </td>'
-                context += f'<td> </td>'
-                context += f'<td><a href="bike/{bike.id}">{bike.mark}</a></td>'
-                context += f'<td>{bike.model}</td>'
-                context += '</tr>'
-                for servis in all_servises:
-                    if servis.bike == bike:
-                        context += '<tr>'
-                        context += f'<td> </td>'
-                        context += f'<td> </td>'
-                        context += f'<td> </td>'
-                        context += f'<td> </td>'
-                        context += f'<td> </td>'
-                        context += f'<td> </td>'
-                        context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
-                        context += f'<td>{servis.servis_range[:20]}...</td>'
-                        context += '</tr>'
 
-    return render(request, 'clients.html', {'text' : context})
+    return render(request, 'clients.html', {'text' : context, 'form': form})
 
 @login_required()
 def comments(request, *args, **kwargs):
