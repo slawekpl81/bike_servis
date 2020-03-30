@@ -1,0 +1,33 @@
+    #clients {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+        color: antiquewhite;
+        background-color: #1b1e21;
+    }
+
+    #clients td, #clients th {
+      border: 1px solid #ddd;
+      padding: 8px;
+
+    }
+
+    #clients tr:nth-child(even){background-color: #1b1e21;}
+
+    #clients tr:hover {background-color: #8f8f8f; color: #1b1e21}
+
+    #clients th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #1681af;
+      color: white;
+    }
+    .data_form{
+        color: #007bff;
+        float: left;
+        padding: 50px 50px;
+    }
+    .data_form p{
+        padding: 5px 5px;
+    }

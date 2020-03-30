@@ -19,16 +19,25 @@ def clients(request):
         form.wyszukaj()
         #form = CommentForm()
 
-    if form.search_name == 'nie określono':
+    if form.search_name == 'wszystkie':
         all_clients = ServisClient.objects.all()
     else:
         all_clients = ServisClient.objects.filter(name=form.search_name)
-    if form.search_group == 'nie określono':
+    if form.search_group == 'wszystkie':
         all_groups = Group.objects.all()
     else:
         all_groups = Group.objects.filter(name=form.search_group)
-    all_bikes = Bike.objects.all()
-    all_servises = Servis.objects.all()
+    if form.search_mark == 'wszystkie':
+        all_bikes = Bike.objects.all()
+    else:
+        all_bikes = Bike.objects.filter(mark=form.search_mark)
+
+    if form.search_status == 'wszystkie':
+        all_servises = Servis.objects.all()
+    elif form.search_status == 'aktywne':
+        all_servises = Servis.objects.filter(status=False)
+    else:
+        all_servises = Servis.objects.filter(status=True)
 
     context = ''
     for client in all_clients:
@@ -51,17 +60,18 @@ def clients(request):
                     context += '</tr>'
                     for servis in all_servises:
                         if servis.bike == bike:
-                            context += '<tr>'
-                            context += f'<td> </td>'
-                            context += f'<td> </td>'
-                            context += f'<td> </td>'
-                            context += f'<td> </td>'
-                            context += f'<td> </td>'
-                            context += f'<td> </td>'
-                            context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
-                            context += f'<td>{servis.servis_range[:20]}...</td>'
-                            context += '</tr>'
-
+                            if not form.search_year.isdigit() or servis.date.year == int(form.search_year):
+                                context += '<tr>'
+                                context += f'<td> </td>'
+                                context += f'<td> </td>'
+                                context += f'<td> </td>'
+                                context += f'<td> </td>'
+                                context += f'<td> </td>'
+                                context += f'<td> </td>'
+                                context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
+                                context += f'<td>{servis.servis_range[:20]}...</td>'
+                                context += f'<td>{"aktywny" if not servis.status else "zakończony"}</td>'
+                                context += '</tr>'
 
     return render(request, 'clients.html', {'text' : context, 'form': form})
 

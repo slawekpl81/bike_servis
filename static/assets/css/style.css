@@ -1,0 +1,33 @@
+{% load static %}
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+}
+
+ul{
+    float: right;
+    list-style-type: none;
+    margin-top: 20px;
+}
+ul li{
+    display: inline-block;
+}
+ul li a{
+    text-decoration: none;
+    color: antiquewhite;
+    padding: 5px 20px;
+    transition: 0.6s ease;
+}
+ul li.prime{
+    font-weight: bold;
+}
+ul li a:hover{
+    background-color: antiquewhite;
+    color: #1b1e21;
+}
+.logo img{
+    float: left;
+    width: 150px;
+    height: auto;
+}

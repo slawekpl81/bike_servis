@@ -68,12 +68,11 @@ class NewGroup(forms.ModelForm):
 
 class SearchForm(forms.Form):
 
-    search_name = 'nie określono'
-    search_group = 'nie określono'
-    search_mark = 'nie określono'
-    search_model = 'nie określono'
+    search_name = 'wszystkie'
+    search_group = 'wszystkie'
+    search_mark = 'wszystkie'
     search_status = 'wszystkie'
-    search_year = 0000
+    search_year = 'wszystkie'
 
     STATUS_CHOICES = [
         (1, "wszystkie"),
@@ -81,25 +80,21 @@ class SearchForm(forms.Form):
         (3, "aktywne")
     ]
     all_clients = ServisClient.objects.all()
-    all_clients_names = [(1, 'nie określono')]
+    all_clients_names = [(1, 'wszystkie')]
     names = list(set([client.name for client in all_clients]))
     temp = [(number, name) for number, name in enumerate(names, start=2)]
     all_clients_names += temp
 
     all_groups = Group.objects.all()
-    all_groups_names = [(1, 'nie określono')]
+    all_groups_names = [(1, 'wszystkie')]
     temp = [(number, group.name) for number, group in enumerate(all_groups, start=2)]
     all_groups_names += temp
 
     all_bikes = Bike.objects.all()
-    all_bikes_mark = [(1, 'nie określono')]
-    all_bikes_model = [(1, 'nie określono')]
+    all_bikes_mark = [(1, 'wszystkie')]
     marks = list(set([bike.mark for bike in all_bikes]))
-    models = list(set([bike.model for bike in all_bikes]))
     temp = [(number, mark) for number, mark in enumerate(marks, start=2)]
     all_bikes_mark += temp
-    temp = [(number, model) for number, model in enumerate(models, start=2)]
-    all_bikes_model += temp
 
     #client_name = forms.CharField(label='nazwa klienta', max_length=100)
     client_name = forms.ChoiceField(choices=all_clients_names, label='klient')
@@ -107,10 +102,8 @@ class SearchForm(forms.Form):
     group_name = forms.ChoiceField(choices=all_groups_names, label='grupa')
     # bike_mark = forms.CharField(label='marka roweru', max_length=100)
     bike_mark = forms.ChoiceField(choices=all_bikes_mark, label='rower')
-    # bike_model = forms.CharField(label='model', max_length=100)
-    bike_model = forms.ChoiceField(choices=all_bikes_model, label='model')
     status = forms.ChoiceField(choices=STATUS_CHOICES)
-    year_of_servis = forms.CharField(label='rok serwisu', max_length=4, initial='****')
+    year_of_servis = forms.CharField(label='rok serwisu', max_length=10, initial='wszystkie')
 
     def wyszukaj(self):
         for number, data in self.all_clients_names:
@@ -120,3 +113,14 @@ class SearchForm(forms.Form):
         for number, data in self.all_groups_names:
             if number == int(self['group_name'].value()):
                 self.search_group = data
+
+        for number, data in self.all_bikes_mark:
+            if number == int(self['bike_mark'].value()):
+                self.search_mark = data
+
+
+        for number, data in self.STATUS_CHOICES:
+            if number == int(self['status'].value()):
+                self.search_status = data
+
+        self.search_year = self['year_of_servis'].value()
