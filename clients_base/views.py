@@ -3,21 +3,77 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Bike, Comments, ServisClient, Servis, Group
 from .forms import CommentForm, NewClientForm, NewBike, NewServis, NewGroup, SearchForm
+import sqlite3
+from sqlite3 import Error
 
-
-
-# Create your views here.
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    connection = None
+    try:
+        connection = sqlite3.connect(db_file)
+    except Error as e:
+        print(e)
+    return connection
+#connection.close()
 
 def home(request, *args, **kwargs):
     return render(request, 'index.html', {})
 
 @login_required()
 def clients(request):
-
     form = SearchForm(request.POST or None)
     if form.is_valid():
         form.wyszukaj()
         #form = CommentForm()
+
+    search_name = f"and clients_base_servisclient.name like '{form.search_name}'"
+    search_mark = f"and clients_base_bike.mark like '{form.search_mark}'"
+    search_group = f"and clients_base_group.name like '{form.search_group}'"
+    search_year = f"and strftime('%Y', clients_base_servis.date) = '{form.search_year}'"
+    search_status = f"and clients_base_servisclient.name like '{form.search_name}'"
+    connection_sqllite = create_connection(db_file='C:\\Users\\slawo\\PycharmProjects\\serwisrowerowy\\db.sqlite3')
+    cursor = connection_sqllite.cursor()
+    query = (f"select \
+                clients_base_servisclient.id, \
+                clients_base_servisclient.name, \
+                clients_base_servisclient.phone, \
+                clients_base_servisclient.email, \
+                clients_base_group.id, \
+                clients_base_group.name, \
+                clients_base_bike.id, \
+                clients_base_bike.mark, \
+                clients_base_bike.model, \
+                clients_base_servis.id, \
+                clients_base_servis.date, \
+                clients_base_servis.servis_range, \
+                clients_base_servis.status \
+            from  \
+                clients_base_servisclient, \
+                clients_base_group, \
+                clients_base_bike, \
+                clients_base_servis \
+            where  \
+                clients_base_servisclient.group_id = clients_base_group.id and \
+                clients_base_bike.owner_id = clients_base_servisclient.id and \
+                clients_base_servis.bike_id = clients_base_bike.id \
+                {search_name if form.search_name != 'wszystkie' else ''} \
+                {search_group if form.search_group != 'wszystkie' else ''} \
+                {search_mark if form.search_mark != 'wszystkie' else ''} \
+                {search_year if form.search_year != 'wszystkie' else ''} \
+                {'and clients_base_servis.status = false' if form.search_status == 'aktywne' else ''} \
+                {'and clients_base_servis.status = true' if form.search_status == 'zakończone' else ''} \
+             order by \
+                clients_base_servisclient.name \
+                ")
+    print(query)
+    cursor.execute(query)
+
+
+
 
     if form.search_name == 'wszystkie':
         all_clients = ServisClient.objects.all()
@@ -40,39 +96,51 @@ def clients(request):
         all_servises = Servis.objects.filter(status=True)
 
     context = ''
-    for client in all_clients:
-        if client.group in all_groups:
-            context += '<tr>'
-            context += f'<td> <a href="{client.id}"> {client.name}</a></td>'
-            context += f'<td>{client.phone}</td>'
-            context += f'<td>{client.email}</td>'
-            context += f'<td><a href="group/{client.group.id}">{client.group}</td>'
-            context += '</tr>'
-            for count, bike in enumerate(all_bikes):
-                if bike.owner == client:
-                    context += '<tr>'
-                    context += f'<td> </td>'
-                    context += f'<td> </td>'
-                    context += f'<td> </td>'
-                    context += f'<td> </td>'
-                    context += f'<td><a href="bike/{bike.id}">{bike.mark}</a></td>'
-                    context += f'<td>{bike.model}</td>'
-                    context += '</tr>'
-                    for servis in all_servises:
-                        if servis.bike == bike:
-                            if not form.search_year.isdigit() or servis.date.year == int(form.search_year):
-                                context += '<tr>'
-                                context += f'<td> </td>'
-                                context += f'<td> </td>'
-                                context += f'<td> </td>'
-                                context += f'<td> </td>'
-                                context += f'<td> </td>'
-                                context += f'<td> </td>'
-                                context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
-                                context += f'<td>{servis.servis_range[:20]}...</td>'
-                                context += f'<td>{"aktywny" if not servis.status else "zakończony"}</td>'
-                                context += '</tr>'
-
+    for row in cursor:
+        context += '<tr>'
+        context += f'<td><a href="{row[0]}">{row[1]}</td>'
+        context += f'<td>{row[2]}</td>'
+        context += f'<td>{row[3]}</td>'
+        context += f'<td><a href="group/{row[4]}">{row[5]}</td>'
+        context += f'<td><a href="bike/{row[6]}">{row[7]}</td>'
+        context += f'<td>{row[8]}</td>'
+        context += f'<td><a href="servis/{row[9]}">{row[10]}</td>'
+        context += f'<td>{row[11]}</td>'
+        context += f'<td>{"aktywny" if not row[12] else "zakończony"}</td>'
+        context += '<tr>'
+    # for client in all_clients:
+    #     if client.group in all_groups:
+    #         context += '<tr>'
+    #         context += f'<td> <a href="{client.id}"> {client.name}</a></td>'
+    #         context += f'<td>{client.phone}</td>'
+    #         context += f'<td>{client.email}</td>'
+    #         context += f'<td><a href="group/{client.group.id}">{client.group}</td>'
+    #         context += '</tr>'
+    #         for count, bike in enumerate(all_bikes):
+    #             if bike.owner == client:
+    #                 context += '<tr>'
+    #                 context += f'<td> </td>'
+    #                 context += f'<td> </td>'
+    #                 context += f'<td> </td>'
+    #                 context += f'<td> </td>'
+    #                 context += f'<td><a href="bike/{bike.id}">{bike.mark}</a></td>'
+    #                 context += f'<td>{bike.model}</td>'
+    #                 context += '</tr>'
+    #                 for servis in all_servises:
+    #                     if servis.bike == bike:
+    #                         if not form.search_year.isdigit() or servis.date.year == int(form.search_year):
+    #                             context += '<tr>'
+    #                             context += f'<td> </td>'
+    #                             context += f'<td> </td>'
+    #                             context += f'<td> </td>'
+    #                             context += f'<td> </td>'
+    #                             context += f'<td> </td>'
+    #                             context += f'<td> </td>'
+    #                             context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
+    #                             context += f'<td>{servis.servis_range[:20]}...</td>'
+    #                             context += f'<td>{"aktywny" if not servis.status else "zakończony"}</td>'
+    #                             context += '</tr>'
+    connection_sqllite.close()
     return render(request, 'clients.html', {'text' : context, 'form': form})
 
 @login_required()

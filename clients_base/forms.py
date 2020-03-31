@@ -74,6 +74,7 @@ class SearchForm(forms.Form):
     search_status = 'wszystkie'
     search_year = 'wszystkie'
 
+
     STATUS_CHOICES = [
         (1, "wszystkie"),
         (2, "zakończone"),
@@ -82,19 +83,19 @@ class SearchForm(forms.Form):
     all_clients = ServisClient.objects.all()
     all_clients_names = [(1, 'wszystkie')]
     names = list(set([client.name for client in all_clients]))
-    temp = [(number, name) for number, name in enumerate(names, start=2)]
-    all_clients_names += temp
+    #temp = [(number, name) for number, name in enumerate(names, start=2)]
+    all_clients_names += [(number, name) for number, name in enumerate(names, start=2)]
 
     all_groups = Group.objects.all()
     all_groups_names = [(1, 'wszystkie')]
-    temp = [(number, group.name) for number, group in enumerate(all_groups, start=2)]
-    all_groups_names += temp
+    #temp = [(number, group.name) for number, group in enumerate(all_groups, start=2)]
+    all_groups_names += [(number, group.name) for number, group in enumerate(all_groups, start=2)]
 
     all_bikes = Bike.objects.all()
     all_bikes_mark = [(1, 'wszystkie')]
     marks = list(set([bike.mark for bike in all_bikes]))
-    temp = [(number, mark) for number, mark in enumerate(marks, start=2)]
-    all_bikes_mark += temp
+    #temp = [(number, mark) for number, mark in enumerate(marks, start=2)]
+    all_bikes_mark += [(number, mark) for number, mark in enumerate(marks, start=2)]
 
     #client_name = forms.CharField(label='nazwa klienta', max_length=100)
     client_name = forms.ChoiceField(choices=all_clients_names, label='klient')
@@ -106,21 +107,30 @@ class SearchForm(forms.Form):
     year_of_servis = forms.CharField(label='rok serwisu', max_length=10, initial='wszystkie')
 
     def wyszukaj(self):
-        for number, data in self.all_clients_names:
-            if number == int(self['client_name'].value()):
-                self.search_name = data
+        # for number, data in self.all_clients_names:
+        #     if number == int(self['client_name'].value()):
+        #         self.search_name = data
+        self.search_name = \
+            list(filter(lambda tuple:int(self['client_name'].value()) in tuple, self.all_clients_names))[0][1]
 
-        for number, data in self.all_groups_names:
-            if number == int(self['group_name'].value()):
-                self.search_group = data
+        # for number, data in self.all_groups_names:
+        #     if number == int(self['group_name'].value()):
+        #         self.search_group = data
+        self.search_group = \
+        list(filter(lambda tuple: int(self['group_name'].value()) in tuple, self.all_groups_names))[0][1]
 
-        for number, data in self.all_bikes_mark:
-            if number == int(self['bike_mark'].value()):
-                self.search_mark = data
+        # for number, data in self.all_bikes_mark:
+        #     if number == int(self['bike_mark'].value()):
+        #         self.search_mark = data
+        self.search_mark = \
+            list(filter(lambda tuple: int(self['bike_mark'].value()) in tuple, self.all_bikes_mark))[0][1]
 
-
-        for number, data in self.STATUS_CHOICES:
-            if number == int(self['status'].value()):
-                self.search_status = data
+        # for number, data in self.STATUS_CHOICES:
+        #     if number == int(self['status'].value()):
+        #         self.search_status = data
+        self.search_status = \
+            list(filter(lambda tuple: int(self['status'].value()) in tuple, self.STATUS_CHOICES))[0][1]
 
         self.search_year = self['year_of_servis'].value()
+        # if self.search_year.isdigit():
+        #     self.search_year = int(self.search_year)
