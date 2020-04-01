@@ -125,25 +125,18 @@ class NewEmail(forms.Form):
                     'Mikesz Rafał'
     email_subject = 'Powiadomienia Sklep Mikesz'
 
-    email = forms.CharField(widget=forms.EmailInput, initial='slawomir.jona@gmail.com', label='email firmowy')
+    email = forms.CharField(widget=forms.EmailInput, initial='email.firmowy@gmail.com', label='email firmowy')
     password = forms.CharField(max_length=30, widget=forms.PasswordInput, label='hasło')
     #send_to_email = forms.CharField(max_length=30, label='email klienta')
     subject = forms.CharField(widget=forms.Textarea, label='temat wiadomości', initial=email_subject)
     message = forms.CharField(widget=forms.Textarea, label='wiadomość', initial=email_context)
 
     def send_email(self, email_to):
-        # self.email = self['email'].value()
-        # self.password = self['password'].value()
-        # self.send_to_email = self['send_to_email'].value()
-        # self.subject = self['subject'].value()
-        # self.message = self['message'].value()
-
         msg = MIMEMultipart()
         msg['From'] = self['email'].value()
-        msg['To'] = email_to #self['send_to_email'].value()
+        msg['To'] = email_to
         msg['Subject'] = self['subject'].value()
 
-         # Attach the message to the MIMEMultipart object
         msg.attach(MIMEText(self['message'].value(), 'plain'))
 
         server = smtplib.SMTP('smtp.gmail.com', 587)

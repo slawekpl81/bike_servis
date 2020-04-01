@@ -27,6 +27,7 @@ SECRET_KEY = 'wd1$q_=*cl#azzh7(8ew2xa8kdx7bgd&o5(cc8s(2y=c1c9zpy'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['codingslawek.pythonanywhere.com']
 
 
 # Application definition
@@ -123,3 +124,7 @@ USE_TZ = True
 STATIC_ROOT = ''
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ( os.path.join('static'), )
+
+# STATIC_ROOT = '/home/codingslawek/bike_servis/static/'
+# STATIC_URL = '/static/'
+# #STATICFILES_DIRS = ( os.path.join('static'), )

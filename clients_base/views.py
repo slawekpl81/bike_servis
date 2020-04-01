@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Bike, Comments, ServisClient, Servis, Group
@@ -18,7 +17,6 @@ def create_connection(db_file):
     except Error as e:
         print(e)
     return connection
-#connection.close()
 
 def home(request, *args, **kwargs):
     return render(request, 'index.html', {})
@@ -65,9 +63,7 @@ def clients(request):
                 {'and clients_base_servis.status = false' if form.search_status == 'aktywne' else ''} \
                 {'and clients_base_servis.status = true' if form.search_status == 'zakończone' else ''} \
              order by \
-                clients_base_servisclient.name \
-                ")
-    print(query)
+                clients_base_servisclient.name ")
     cursor.execute(query)
 
     context = ''
@@ -110,7 +106,6 @@ def new_client(request):
 
 @login_required()
 def new_bike(request):
-    bikes_number = Bike.objects.all().__len__()
     form = NewBike(request.POST or None)
     if form.is_valid():
         form.save()
@@ -120,7 +115,6 @@ def new_bike(request):
 
 @login_required()
 def new_servis(request):
-    servises_number = Servis.objects.all().__len__()
     form = NewServis(request.POST or None)
     if form.is_valid():
         form.save()
@@ -130,7 +124,6 @@ def new_servis(request):
 
 @login_required()
 def new_group(request):
-    #servises_number = Servis.objects.all().__len__()
     form = NewGroup(request.POST or None)
     if form.is_valid():
         form.save()
