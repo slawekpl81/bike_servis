@@ -78,6 +78,14 @@
                 </p>
                 <input type="submit" value="save">
             </form>
+                                            {% elif email %}
+                <p>Nowa wiadomość:</p>
+                <form method="post"> {% csrf_token %}
+                <p id="data_forms">
+                {{ email.as_ul }}
+                </p>
+                <input type="submit" value="send_email">
+            </form>
             {% endif %}
     </div>
 {% endblock content %}

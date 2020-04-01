@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Bike, Comments, ServisClient, Servis, Group
-from .forms import CommentForm, NewClientForm, NewBike, NewServis, NewGroup, SearchForm
+from .forms import CommentForm, NewClientForm, NewBike, NewServis, NewGroup, SearchForm, NewEmail
 import sqlite3
 from sqlite3 import Error
 
@@ -73,9 +73,9 @@ def clients(request):
     context = ''
     for row in cursor:
         context += '<tr>'
-        context += f'<td><a href="{row[0]}">{row[1]}</td>'
-        context += f'<td>{row[2]}</td>'
-        context += f'<td>{row[3]}</td>'
+        context += f'<td><a href="{row[0]}">{row[1]}</td>'      #name
+        context += f'<td>{row[2]}</td>'                         #phone
+        context += f'<td><a href="email/{row[3]}">{row[3]}</td>'#email
         context += f'<td><a href="group/{row[4]}">{row[5]}</td>'
         context += f'<td><a href="bike/{row[6]}">{row[7]}</td>'
         context += f'<td>{row[8]}</td>'
@@ -172,4 +172,13 @@ def group(request, group_id):
     if form.is_valid():
         form.save()
     context = {'group' : form}
+    return render(request, 'new_client.html', context)
+
+@login_required()
+def email(request, email_to):
+    form = NewEmail(request.POST or None)
+    if form.is_valid():
+        form.send_email(email_to)
+        form = NewEmail()
+    context = {'email' : form}
     return render(request, 'new_client.html', context)

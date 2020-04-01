@@ -1,6 +1,9 @@
 from django import forms
 
 from .models import Comments, ServisClient, Bike, Servis, Group
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 class CommentForm(forms.ModelForm):
@@ -110,3 +113,42 @@ class SearchForm(forms.Form):
             list(filter(lambda tuple: int(self['status'].value()) in tuple, self.STATUS_CHOICES))[0][1]
 
         self.search_year = self['year_of_servis'].value()
+
+class NewEmail(forms.Form):
+    # email = 'myaddress@gmail.com'
+    # password = 'password'
+    # send_to_email = 'sentoaddreess@gmail.com'
+    # subject = 'This is the subject'  # The subject line
+    # message = 'This is my message'
+    email_context = 'Serdecznie informujemy, że rower jest gotowy do odbioru!' \
+                    'Pozdrawiamy i życzymy udanego dnia.' \
+                    'Mikesz Rafał'
+    email_subject = 'Powiadomienia Sklep Mikesz'
+
+    email = forms.CharField(widget=forms.EmailInput, initial='slawomir.jona@gmail.com', label='email firmowy')
+    password = forms.CharField(max_length=30, widget=forms.PasswordInput, label='hasło')
+    #send_to_email = forms.CharField(max_length=30, label='email klienta')
+    subject = forms.CharField(widget=forms.Textarea, label='temat wiadomości', initial=email_subject)
+    message = forms.CharField(widget=forms.Textarea, label='wiadomość', initial=email_context)
+
+    def send_email(self, email_to):
+        # self.email = self['email'].value()
+        # self.password = self['password'].value()
+        # self.send_to_email = self['send_to_email'].value()
+        # self.subject = self['subject'].value()
+        # self.message = self['message'].value()
+
+        msg = MIMEMultipart()
+        msg['From'] = self['email'].value()
+        msg['To'] = email_to #self['send_to_email'].value()
+        msg['Subject'] = self['subject'].value()
+
+         # Attach the message to the MIMEMultipart object
+        msg.attach(MIMEText(self['message'].value(), 'plain'))
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(self['email'].value(), self['password'].value())
+        text = msg.as_string() # You now need to convert the MIMEMultipart object to a string to send
+        server.sendmail(self['email'].value(), email_to, text)
+        server.quit()

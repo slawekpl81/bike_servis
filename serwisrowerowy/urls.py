@@ -34,6 +34,7 @@ urlpatterns = [
     path('clients/bike/<int:bike_id>', views.bike, name='bike'),
     path('clients/servis/<int:servis_id>', views.servis, name='servis'),
     path('clients/group/<int:group_id>', views.group, name='group'),
+    path('clients/email/<str:email_to>', views.email, name='email'),
     path('accounts/login/', login_view, name='login'),
     #path('accounts/register/', register_view),
     path('accounts/logout/', logout_view, name='logout'),
