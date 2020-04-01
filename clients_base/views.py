@@ -28,13 +28,11 @@ def clients(request):
     form = SearchForm(request.POST or None)
     if form.is_valid():
         form.wyszukaj()
-        #form = CommentForm()
 
     search_name = f"and clients_base_servisclient.name like '{form.search_name}'"
     search_mark = f"and clients_base_bike.mark like '{form.search_mark}'"
     search_group = f"and clients_base_group.name like '{form.search_group}'"
     search_year = f"and strftime('%Y', clients_base_servis.date) = '{form.search_year}'"
-    search_status = f"and clients_base_servisclient.name like '{form.search_name}'"
     connection_sqllite = create_connection(db_file='C:\\Users\\slawo\\PycharmProjects\\serwisrowerowy\\db.sqlite3')
     cursor = connection_sqllite.cursor()
     query = (f"select \
@@ -72,29 +70,6 @@ def clients(request):
     print(query)
     cursor.execute(query)
 
-
-
-
-    if form.search_name == 'wszystkie':
-        all_clients = ServisClient.objects.all()
-    else:
-        all_clients = ServisClient.objects.filter(name=form.search_name)
-    if form.search_group == 'wszystkie':
-        all_groups = Group.objects.all()
-    else:
-        all_groups = Group.objects.filter(name=form.search_group)
-    if form.search_mark == 'wszystkie':
-        all_bikes = Bike.objects.all()
-    else:
-        all_bikes = Bike.objects.filter(mark=form.search_mark)
-
-    if form.search_status == 'wszystkie':
-        all_servises = Servis.objects.all()
-    elif form.search_status == 'aktywne':
-        all_servises = Servis.objects.filter(status=False)
-    else:
-        all_servises = Servis.objects.filter(status=True)
-
     context = ''
     for row in cursor:
         context += '<tr>'
@@ -108,38 +83,7 @@ def clients(request):
         context += f'<td>{row[11]}</td>'
         context += f'<td>{"aktywny" if not row[12] else "zakończony"}</td>'
         context += '<tr>'
-    # for client in all_clients:
-    #     if client.group in all_groups:
-    #         context += '<tr>'
-    #         context += f'<td> <a href="{client.id}"> {client.name}</a></td>'
-    #         context += f'<td>{client.phone}</td>'
-    #         context += f'<td>{client.email}</td>'
-    #         context += f'<td><a href="group/{client.group.id}">{client.group}</td>'
-    #         context += '</tr>'
-    #         for count, bike in enumerate(all_bikes):
-    #             if bike.owner == client:
-    #                 context += '<tr>'
-    #                 context += f'<td> </td>'
-    #                 context += f'<td> </td>'
-    #                 context += f'<td> </td>'
-    #                 context += f'<td> </td>'
-    #                 context += f'<td><a href="bike/{bike.id}">{bike.mark}</a></td>'
-    #                 context += f'<td>{bike.model}</td>'
-    #                 context += '</tr>'
-    #                 for servis in all_servises:
-    #                     if servis.bike == bike:
-    #                         if not form.search_year.isdigit() or servis.date.year == int(form.search_year):
-    #                             context += '<tr>'
-    #                             context += f'<td> </td>'
-    #                             context += f'<td> </td>'
-    #                             context += f'<td> </td>'
-    #                             context += f'<td> </td>'
-    #                             context += f'<td> </td>'
-    #                             context += f'<td> </td>'
-    #                             context += f'<td><a href="servis/{servis.id}">{servis.date}</a></td>'
-    #                             context += f'<td>{servis.servis_range[:20]}...</td>'
-    #                             context += f'<td>{"aktywny" if not servis.status else "zakończony"}</td>'
-    #                             context += '</tr>'
+
     connection_sqllite.close()
     return render(request, 'clients.html', {'text' : context, 'form': form})
 
@@ -227,5 +171,5 @@ def group(request, group_id):
     form = NewGroup(request.POST or None, instance=group_one)
     if form.is_valid():
         form.save()
-    context= {'group' : form}
+    context = {'group' : form}
     return render(request, 'new_client.html', context)
